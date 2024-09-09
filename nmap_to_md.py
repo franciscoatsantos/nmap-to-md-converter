@@ -1,12 +1,22 @@
-import argparse
 import xml.etree.ElementTree as ET
+import argparse
+
 
 def parse_nmap_xml(xml_file):
+    """
+    Parses an Nmap XML file and generates a Markdown report.
+
+    Args:
+        xml_file (str): The path to the Nmap XML file.
+
+    Returns:
+        str: The generated Markdown report.
+    """
+
     # Parse the XML file
     tree = ET.parse(xml_file)
     root = tree.getroot()
 
-    # Initialize the Markdown report
     markdown_report = "# Nmap Scan Report\n\n"
 
     # Iterate over each host in the XML
@@ -17,7 +27,6 @@ def parse_nmap_xml(xml_file):
             if addr.get('addrtype') == 'ipv4':
                 ip_addr = addr.get('addr')
 
-        # Skip hosts without IP address
         if not ip_addr:
             continue
 
@@ -46,7 +55,8 @@ def parse_nmap_xml(xml_file):
                 protocol = port.get('protocol')
                 state = port.find('state').get('state')
                 service = port.find('service')
-                service_name = service.get('name') if service is not None else 'Unknown'
+                service_name = service.get(
+                    'name') if service is not None else 'Unknown'
 
                 markdown_report += f"| {port_id} | {protocol} | {service_name} | {state} |\n"
 
@@ -54,21 +64,36 @@ def parse_nmap_xml(xml_file):
 
     return markdown_report
 
+
 def save_report(markdown_report, output_file):
+    """
+    Save the generated Markdown report to a file.
+
+    Args:
+        markdown_report (str): The Markdown report to be saved.
+        output_file (str): The path to the output Markdown file.
+    """
     with open(output_file, 'w') as f:
         f.write(markdown_report)
 
+
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="Convert Nmap XML report to Markdown.")
-    parser.add_argument("-i", "--input", required=True, help="Path to the Nmap XML report file")
-    parser.add_argument("-o", "--output", required=False, help="Path to the output Markdown file")
+    parser = argparse.ArgumentParser(
+        description="Convert Nmap XML report to Markdown.")
+    parser.add_argument("-i", "--input", required=True,
+                        help="Path to the Nmap XML report file")
+    parser.add_argument("-o", "--output", required=False,
+                        help="Path to the output Markdown file")
 
     # Parse arguments
     args = parser.parse_args()
-    input_file = args.input.strip() # Replace with your XML file path
-    output_file = "nmap_report.md" if not args.output.strip() else args.output.strip()  # Replace with your desired output path
 
+    # Get the XML file path from the arguments
+    input_file = args.input.strip()
+
+    # Default to nmap_report.md if no args are given for the ouput path
+    output_file = "nmap_report.md" if not args.output.strip() else args.output.strip()
 
     # Parse the XML and generate the Markdown report
     markdown_report = parse_nmap_xml(input_file)
