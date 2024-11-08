@@ -48,8 +48,8 @@ def parse_nmap_xml(xml_file):
         ports = host.find('ports')
         if ports is not None:
             markdown_report += "### Open Ports\n\n"
-            markdown_report += "| Port | Protocol | Service | State |\n"
-            markdown_report += "|------|----------|---------|-------|\n"
+            markdown_report += "| Port | Protocol | Service | State | Version |\n"
+            markdown_report += "|------|----------|---------|-------|---------|\n"
             for port in ports.findall('port'):
                 port_id = port.get('portid')
                 protocol = port.get('protocol')
@@ -57,8 +57,9 @@ def parse_nmap_xml(xml_file):
                 service = port.find('service')
                 service_name = service.get(
                     'name') if service is not None else 'Unknown'
+                version = service.get('version') or "N/A" if service is not None else "N/A"
 
-                markdown_report += f"| {port_id} | {protocol} | {service_name} | {state} |\n"
+                markdown_report += f"| {port_id} | {protocol} | {service_name} | {state} | {version} |\n"
 
         markdown_report += "\n"
 
