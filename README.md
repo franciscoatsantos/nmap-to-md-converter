@@ -38,9 +38,6 @@ nmap <target> -T4 -A -v -oX - | ./nmap_to_md.py -o report.md
 ```
 
 ## Notes
-
-- If you run `nmap_to_md.py` without `./`, your shell may execute a different script from your system PATH.
-- To ensure you use this project version, run it as `./nmap_to_md.py`.
 - Output defaults:
 	- Stdin input without `-o`: writes Markdown to stdout.
 	- File input (`-i`) without `-o`: writes Markdown to `output.md`.
